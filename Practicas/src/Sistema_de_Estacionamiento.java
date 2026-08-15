@@ -26,6 +26,7 @@ public class   Sistema_de_Estacionamiento{
                 case 1->Ingresar_vehiculo();
                 case 2->Retirar_vehiculo();
                 case 3->Mostrar_estacionamiento();
+                case 4->Buscar_vehiculo();
                 case 6->Mostrar_ingresos();
                 case 7->continuaMenu=false;
 
@@ -239,6 +240,7 @@ public class   Sistema_de_Estacionamiento{
         // Si terminó los ciclos sin encontrar la placa
         System.out.println("El vehiculo con placa " + placa + " no existe en el estacionamiento.");
     }
+    //METODO PARA MOSTRAR INGRESOS
     private static void Mostrar_ingresos() {
 
         System.out.println("""
@@ -247,6 +249,65 @@ public class   Sistema_de_Estacionamiento{
             Vehiculos que realizaron el pago: %d
             Total recaudado: Q %.2f
             """.formatted(vehiculosPagaron, ingresos));
+    }
+//METODO PARA BUSCAR VEHICULO
+    private static void Buscar_vehiculo() {
+
+        var consola = new Scanner(System.in);
+
+        System.out.println("Ingrese la placa del vehiculo: ");
+        var placa = consola.nextLine();
+
+        // Validar longitud
+        if (placa.length() != 7) {
+            System.out.println("Placa invalida");
+            return;
+        }
+
+        var numeros = placa.substring(1, 4);
+        var mayusculas = placa.substring(4, 7);
+
+        // Validar que inicie con P
+        if (placa.charAt(0) != 'P') {
+            System.out.println("Placa invalida, no inicia con P");
+            return;
+        }
+
+        // Validar los tres numeros
+        if (!numeros.matches("\\d+")) {
+            System.out.println("Placa invalida, no tiene los tres digitos correspondientes.");
+            return;
+        }
+
+        // Validar las letras mayusculas
+        if (!mayusculas.equals(mayusculas.toUpperCase())) {
+            System.out.println("Placa invalida, los ultimos caracteres no estan en mayusculas");
+            return;
+        }
+
+        // Buscar la placa en el estacionamiento
+        for (int i = 2; i <= 9; i++) {
+
+            for (int j = 2; j <= 9; j++) {
+
+                if (parqueo[i][j] != null && parqueo[i][j].equals(placa)) {
+
+                    System.out.println("""
+                        
+                        Vehiculo encontrado.
+                        Placa: %s
+                        Fila: %d
+                        Columna: %d
+                        """.formatted(placa, i - 1, j - 1));
+
+                    return;
+                }
+            }
+        }
+
+        // Si no se encontró
+        System.out.println("El vehiculo con placa " + placa +
+                " no se encuentra en el estacionamiento.");
     }
 
 }
