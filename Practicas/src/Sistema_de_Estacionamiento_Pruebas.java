@@ -4,6 +4,8 @@ public class   Sistema_de_Estacionamiento_Pruebas{
     static String[][] parqueo = new String[11][11];
     static double tarifa = 10;
     static double Monto;
+    static int vehiculosPagaron = 0;
+    static double ingresos=0;
 public static void main(String[]args){
 
     var consola = new Scanner(System.in);
@@ -22,7 +24,9 @@ public static void main(String[]args){
         int opcion=consola.nextInt();
         switch (opcion){
             case 1->Ingresar_vehiculo();
+            case 2->Retirar_vehiculo();
             case 3->Mostrar_estacionamiento();
+            case 6->Mostrar_ingresos();
             case 7->continuaMenu=false;
 
             default-> System.out.println("Opcion invalida");
@@ -84,6 +88,8 @@ private static void Ingresar_vehiculo(){
                  
                    """.formatted(placa, fila, columna, tarifa, Monto,cambio));
             parqueo[fila+1][columna+1]=placa;
+           vehiculosPagaron++;
+           ingresos += 10;
        }
        else{
            System.out.println("La fila y la columna que  ingreso son invalidas");
@@ -173,5 +179,74 @@ private static void Mostrar_estacionamiento() {
 
     System.out.println();
 }
+    private static void Retirar_vehiculo() {
+
+        var consola = new Scanner(System.in);
+
+        System.out.println("Ingrese la placa del vehiculo que desea retirar: ");
+        var placa = consola.nextLine();
+
+        // Validar que la placa tenga 7 caracteres
+        if (placa.length() != 7) {
+            System.out.println("Placa invalida");
+            return;
+        }
+
+        var numeros = placa.substring(1, 4);
+        var mayusculas = placa.substring(4, 7);
+
+        // Validar que inicie con P
+        if (placa.charAt(0) != 'P') {
+            System.out.println("Placa invalida, no inicia con P");
+            return;
+        }
+
+        // Validar los tres numeros
+        if (!numeros.matches("\\d+")) {
+            System.out.println("Placa invalida, no tiene los tres digitos correspondientes.");
+            return;
+        }
+
+        // Validar las letras mayusculas
+        if (!mayusculas.equals(mayusculas.toUpperCase())) {
+            System.out.println("Placa invalida, los ultimos caracteres no estan en mayusculas");
+            return;
+        }
+
+        // Buscar la placa
+        for (int i = 2; i <= 9; i++) {
+
+            for (int j = 2; j <= 9; j++) {
+
+                if (parqueo[i][j] != null && parqueo[i][j].equals(placa)) {
+
+                    // Mostrar ubicación
+                    System.out.println("""
+                        Vehiculo encontrado.
+                        Placa: %s
+                        Fila: %d
+                        Columna: %d
+                        """.formatted(placa, i - 1, j - 1));
+
+                    // Liberar espacio
+                    parqueo[i][j] = "L";
+
+                    return;
+                }
+            }
+        }
+
+        // Si terminó los ciclos sin encontrar la placa
+        System.out.println("El vehiculo con placa " + placa + " no existe en el estacionamiento.");
+    }
+    private static void Mostrar_ingresos() {
+
+        System.out.println("""
+            
+            === INGRESOS DEL ESTACIONAMIENTO ===
+            Vehiculos que realizaron el pago: %d
+            Total recaudado: Q %.2f
+            """.formatted(vehiculosPagaron, ingresos));
+    }
 
 }

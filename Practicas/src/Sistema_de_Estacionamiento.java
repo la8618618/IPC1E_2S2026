@@ -1,7 +1,11 @@
 import java.util.Scanner;
 
-public class   Sistema_de_Estacionamiento{
+public class   Sistema_de_Estacionamiento_Pruebas{
     static String[][] parqueo = new String[11][11];
+    static double tarifa = 10;
+    static double Monto;
+    static int vehiculosPagaron = 0;
+    static double ingresos=0;
     public static void main(String[]args){
 
         var consola = new Scanner(System.in);
@@ -20,7 +24,9 @@ public class   Sistema_de_Estacionamiento{
             int opcion=consola.nextInt();
             switch (opcion){
                 case 1->Ingresar_vehiculo();
+                case 2->Retirar_vehiculo();
                 case 3->Mostrar_estacionamiento();
+                case 6->Mostrar_ingresos();
                 case 7->continuaMenu=false;
 
                 default-> System.out.println("Opcion invalida");
@@ -60,6 +66,36 @@ public class   Sistema_de_Estacionamiento{
 
         }else{
             estacionamiento();
+            System.out.println("Ingrese la fila (del 1 al 8): ");
+            var fila = consola.nextInt();
+            System.out.println("Ingrese la colunma (del 1 al 8)");
+            var columna = consola.nextInt();
+            if(fila>=1 && fila<=8 && columna>=1 && columna<=8){
+                do {
+                    System.out.println("Ingrese la tarifa (Q10.00) ");
+                    Monto = consola.nextDouble();
+                }
+                while(Monto<10);
+                var cambio = Monto-tarifa;
+                System.out.println("""
+                   Placa: %s
+                   Fila: %d
+                   Columna: %d
+                   Tarifa: Q %.2f
+                   Monto Ingresado: Q %.2f
+                   Cambio: Q %.2f
+                   Vehiculo Ingresado Correctamente
+                 
+                   """.formatted(placa, fila, columna, tarifa, Monto,cambio));
+                parqueo[fila+1][columna+1]=placa;
+                vehiculosPagaron++;
+                ingresos += 10;
+            }
+            else{
+                System.out.println("La fila y la columna que  ingreso son invalidas");
+                return;
+            }
+
         }
 
 
@@ -90,13 +126,9 @@ public class   Sistema_de_Estacionamiento{
                     parqueo[i][j] = "L";
 
                     //Si el espacio del parqueo esta ocupado desde la columna 2 y fila 2, se agrega A indicando que esta ocupado
-                } else if (i >= 2 && i <= 9 && j >= 2 && j <= 9 && parqueo[i][j] != null) {
-                    parqueo[i][j] = "A";
-                    //Se agregan los signos igual alrededor del parqueo
-                } else if (i >= 1 && j >= 1 && i <= 10 && j <= 10) {
-                    parqueo[i][j] = "=";
+                }
 
-                } else if (parqueo[i][j] == null) {
+                else if (parqueo[i][j] == null) {
 
                     parqueo[i][j] = " ";
                 }
@@ -108,16 +140,113 @@ public class   Sistema_de_Estacionamiento{
 
     }
     //Opcion Mostrar estacionamiento
-    private static void Mostrar_estacionamiento(){
-        estacionamiento();
-//Impresion del tablero
-        for (int i = 0; i <= 10; i++) {
-            for (int j = 0; j <= 10; j++) {
-                System.out.print(parqueo[i][j] + " ");
-                if (j >= 10)
-                    System.out.println(" ");
+    private static void Mostrar_estacionamiento() {
 
+        estacionamiento();
+
+        // Números de las columnas
+        System.out.print("    ");
+
+        for (int j = 2; j <= 9; j++) {
+            System.out.print(parqueo[0][j] + " ");
+        }
+
+        System.out.println();
+
+        // Filas del estacionamiento
+        for (int i = 2; i <= 9; i++) {
+
+            System.out.print(parqueo[i][0] + " = ");
+
+            for (int j = 2; j <= 9; j++) {
+
+                if (parqueo[i][j].equals("L")) {
+                    System.out.print("L ");
+                } else {
+                    System.out.print("A ");
+                }
+            }
+
+            System.out.println("=");
+        }
+
+        // Iguales de abajo
+        System.out.print("  ");
+
+        for (int j = 1; j <= 10; j++) {
+            System.out.print("= ");
+        }
+
+        System.out.println();
+    }
+    private static void Retirar_vehiculo() {
+
+        var consola = new Scanner(System.in);
+
+        System.out.println("Ingrese la placa del vehiculo que desea retirar: ");
+        var placa = consola.nextLine();
+
+        // Validar que la placa tenga 7 caracteres
+        if (placa.length() != 7) {
+            System.out.println("Placa invalida");
+            return;
+        }
+
+        var numeros = placa.substring(1, 4);
+        var mayusculas = placa.substring(4, 7);
+
+        // Validar que inicie con P
+        if (placa.charAt(0) != 'P') {
+            System.out.println("Placa invalida, no inicia con P");
+            return;
+        }
+
+        // Validar los tres numeros
+        if (!numeros.matches("\\d+")) {
+            System.out.println("Placa invalida, no tiene los tres digitos correspondientes.");
+            return;
+        }
+
+        // Validar las letras mayusculas
+        if (!mayusculas.equals(mayusculas.toUpperCase())) {
+            System.out.println("Placa invalida, los ultimos caracteres no estan en mayusculas");
+            return;
+        }
+
+        // Buscar la placa
+        for (int i = 2; i <= 9; i++) {
+
+            for (int j = 2; j <= 9; j++) {
+
+                if (parqueo[i][j] != null && parqueo[i][j].equals(placa)) {
+
+                    // Mostrar ubicación
+                    System.out.println("""
+                        Vehiculo encontrado.
+                        Placa: %s
+                        Fila: %d
+                        Columna: %d
+                        """.formatted(placa, i - 1, j - 1));
+
+                    // Liberar espacio
+                    parqueo[i][j] = "L";
+
+                    return;
+                }
             }
         }
 
-    }}
+        // Si terminó los ciclos sin encontrar la placa
+        System.out.println("El vehiculo con placa " + placa + " no existe en el estacionamiento.");
+    }
+    private static void Mostrar_ingresos() {
+
+        System.out.println("""
+            
+            === INGRESOS DEL ESTACIONAMIENTO ===
+            Vehiculos que realizaron el pago: %d
+            Total recaudado: Q %.2f
+            """.formatted(vehiculosPagaron, ingresos));
+    }
+
+}
