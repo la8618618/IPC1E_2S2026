@@ -2,6 +2,8 @@ import java.util.Scanner;
 
 public class   Sistema_de_Estacionamiento_Pruebas{
     static String[][] parqueo = new String[11][11];
+    static double tarifa = 10;
+    static double Monto;
 public static void main(String[]args){
 
     var consola = new Scanner(System.in);
@@ -64,7 +66,29 @@ private static void Ingresar_vehiculo(){
         var fila = consola.nextInt();
         System.out.println("Ingrese la colunma (del 1 al 8)");
         var columna = consola.nextInt();
-       parqueo[fila+1][columna+1]=placa;
+       if(fila>=1 && fila<=8 && columna>=1 && columna<=8){
+           do {
+               System.out.println("Ingrese la tarifa (Q10.00) ");
+               Monto = consola.nextDouble();
+           }
+           while(Monto<10);
+           var cambio = Monto-tarifa;
+           System.out.println("""
+                   Placa: %s
+                   Fila: %d
+                   Columna: %d
+                   Tarifa: Q %.2f
+                   Monto Ingresado: Q %.2f
+                   Cambio: Q %.2f
+                   Vehiculo Ingresado Correctamente
+                 
+                   """.formatted(placa, fila, columna, tarifa, Monto,cambio));
+            parqueo[fila+1][columna+1]=placa;
+       }
+       else{
+           System.out.println("La fila y la columna que  ingreso son invalidas");
+           return;
+       }
 
     }
 
