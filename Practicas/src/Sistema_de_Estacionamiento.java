@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class   Sistema_de_Estacionamiento_Pruebas{
+public class   Sistema_de_Estacionamiento{
     static String[][] parqueo = new String[11][11];
     static double tarifa = 10;
     static double Monto;
